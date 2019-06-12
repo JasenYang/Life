@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Of Life</title>
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+<div>
+    <canvas id="mycanvas" style="border: 1px solid; solid-color: #000000;">
+    </canvas>
+
+    <button style="width: 200px; height: 100px;" onclick="start()" id="btn">
+        开始
+    </button>
+</div>
+<script>
+    window.live_table = [190];
+    var canvas_listen;
+    var flag = true;
+    function init_table() {
+        for (i = 0; i < 190; i++) {
+            window.live_table[i] = [100];
+            for (j = 0; j<100; j++) {
+                window.live_table[i][j] = 0;
+            }
+        }
+        var c = document.getElementById("mycanvas");
+        c.width = 900;
+        c.height = 900;
+        canvas_listen = function (ev) {
+            getMousePos(c, ev);
+        };
+        c.addEventListener("click", canvas_listen);
+        var ctx = c.getContext("2d");
+        ctx.fillStyle="#ffffff";
+        ctx.strokeStyle='#000000';
+        ctx.lineWidth = 1;
+        for (i=0; i< c.width; i++) {
+            for (j = 0; j<c.height; j++) {
+                ctx.strokeRect(i*30, j*30, 30, 30);
+            }
+        }
+    }
+
+    function getMousePos(canvas, event) {
+        var rect = canvas.getBoundingClientRect();
+        var x = Math.floor((event.clientX - rect.left) / 30);
+        var y = Math.floor((event.clientY - rect.top) / 30);
+        var ctx = canvas.getContext("2d");
+        if(window.live_table[x][y] === 1) {
+            ctx.fillStyle="#ffffff";
+            ctx.strokeStyle='#000000';
+            ctx.lineWidth = 1;
+            ctx.clearRect(x*30, y*30, 30, 30);
+            ctx.strokeRect(x*30, y*30, 30, 30);
+            window.live_table[x][y] = 0;
+        } else {
+            ctx.fillStyle="#000000";
+            ctx.fillRect(x*30, y*30, 30, 30);
+            window.live_table[x][y] = 1;
+        }
+    }
+
+    function sleep(ms){
+        return new Promise((resolve)=>setTimeout(resolve,ms));
+    }
+
+    async function start() {
+        var btn = document.getElementById('btn');
+        btn.innerHTML = '结束';
+        btn.addEventListener("click", function () {
+           flag = false;
+           btn.innerHTML = '开始';
+        });
+        while (flag) {
+            flush();
+            await sleep(1000);
+            console.log("输出");
+        }
+    }
+
+    function flush(){
+        var c = document.getElementById("mycanvas");
+        c.removeEventListener("click", canvas_listen, false);
+        c.width = 1900;
+        c.height = 1000;
+        var ctx = c.getContext("2d");
+        ctx.fillStyle="#000000";
+        ctx.lineWidth = 1;
+        for (i=0; i< c.width/10; i++) {
+            for (j = 0; j<c.height/10; j++) {
+                if (live_table[i][j] === 1) {
+                    ctx.fillRect(i*10, j*10, 10, 10);
+                }
+            }
+        }
+    }
+
+    init_table()
+
+    // var c = document.getElementById("mycanvas");
+    // c.width = 1900;
+    // c.height = 1000;
+    // var ctx = c.getContext("2d");
+    // ctx.fillStyle="#000000";
+    // ctx.fillRect(299, 149,10, 10);
+    // ctx.fillRect(60,180,10,10);
+
+
+</script>
+</body>
+</html>
