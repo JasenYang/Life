@@ -1,0 +1,23 @@
+{
+  "name": "life",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JasenYang/Life.git"
+  },
+  "keywords": [
+    "life",
+    "game"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JasenYang/Life/issues"
+  },
+  "homepage": "https://github.com/JasenYang/Life#readme"
+}
