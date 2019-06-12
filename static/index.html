@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Of Life</title>
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+<div>
+    <canvas id="mycanvas" style="border: 1px solid; solid-color: #000000;">
+    </canvas>
+
+    <button style="width: 200px; height: 100px;" onclick="start()" id="btn">
+        开始
+    </button>
+</div>
+<script>
+    window.live_table = [100];
+    var canvas_listen;
+    var flag = true;
+    function init_table() {
+        for (i = 0; i < 100; i++) {
+            window.live_table[i] = [190];
+            for (j = 0; j<190; j++) {
+                window.live_table[i][j] = 0;
+            }
+        }
+        var c = document.getElementById("mycanvas");
+        c.width = 900;
+        c.height = 900;
+        canvas_listen = function (ev) {
+            getMousePos(c, ev);
+        };
+        c.addEventListener("click", canvas_listen);
+        var ctx = c.getContext("2d");
+        ctx.fillStyle="#ffffff";
+        ctx.strokeStyle='#000000';
+        ctx.lineWidth = 1;
+        for (i=0; i< c.width; i++) {
+            for (j = 0; j<c.height; j++) {
+                ctx.strokeRect(i*30, j*30, 30, 30);
+            }
+        }
+    }
+
+    function getMousePos(canvas, event) {
+        var rect = canvas.getBoundingClientRect();
+        var x = Math.floor((event.clientX - rect.left) / 30);
+        var y = Math.floor((event.clientY - rect.top) / 30);
+        var ctx = canvas.getContext("2d");
+        if(window.live_table[x][y] === 1) {
+            ctx.fillStyle="#ffffff";
+            ctx.strokeStyle='#000000';
+            ctx.lineWidth = 1;
+            ctx.clearRect(x*30, y*30, 30, 30);
+            ctx.strokeRect(x*30, y*30, 30, 30);
+            window.live_table[x][y] = 0;
+        } else {
+            ctx.fillStyle="#000000";
+            ctx.fillRect(x*30, y*30, 30, 30);
+            window.live_table[x][y] = 1;
+        }
+    }
+
+    function sleep(ms){
+        return new Promise((resolve)=>setTimeout(resolve,ms));
+    }
+
+    async function start() {
+        var c = document.getElementById("mycanvas");
+        c.removeEventListener("click", canvas_listen, false);
+        var btn = document.getElementById('btn');
+        btn.innerHTML = '结束';
+        btn.addEventListener("click", function () {
+           flag = false;
+           btn.innerHTML = '开始';
+        });
+        while (flag) {
+            flush();
+            await sleep(50);
+        }
+    }
+
+    function flush(){
+        var c = document.getElementById("mycanvas");
+        c.width = 1900;
+        c.height = 1000;
+        var ctx = c.getContext("2d");
+        ctx.fillStyle="#000000";
+        ctx.lineWidth = 1;
+        for (i=0; i< c.height/10; i++) {
+            for (j = 0; j<c.width/10; j++) {
+                if (live_table[i][j] === 1) {
+                    ctx.fillRect(i*10, j*10, 10, 10);
+                }
+            }
+        }
+        for (i=0; i<live_table.length;i++) {
+            console.log(live_table[i]);
+        }
+        cal_table();
+    }
+    
+    function deep_copy(arr) {
+        var temp_table = [arr.length];
+        for(i = 0; i < arr.length; i ++) {
+            var l = arr[i];
+            temp_table[i] = [l];
+        }
+        return temp_table;
+    }
+    
+    function cal_table() {
+        var temp_table = deep_copy(live_table);
+        var c = document.getElementById("mycanvas");
+        right = c.width/10;
+        bottom = c.height/10;
+        // var lowest = 2;
+        // var highest = 3;
+        for (i = 0; i < bottom; i ++) {
+            for (j = 0; j < right; j ++) {
+                var count = 0;
+                if (i === 0 && j !== 0 && j !== right - 1) {
+                    //todo 上边界
+                    count = live_table[i][j-1] + live_table[i+1][j-1] + live_table[i+1][j] + live_table[i+1][j+1] + live_table[i][j+1];
+                }else if (i === bottom - 1 && j !== 0 && j !== right - 1) {
+                    //todo 下边界
+                    count = live_table[i][j-1] + live_table[i-1][j-1] + live_table[i-1][j] + live_table[i-1][j+1] + live_table[i][j+1];
+                }else if (j === 0 && i !== 0 && i !== bottom - 1) {
+                    //todo 左边界
+                    count = live_table[i-1][j] + live_table[i-1][j+1] + live_table[i][j+1] + live_table[i+1][j+1] + live_table[i+1][j];
+                }else if (j === right - 1 && i !== 0 && i !== bottom - 1) {
+                    //todo 右边界
+                    count = live_table[i-1][j] + live_table[i-1][j-1] + live_table[i][j-1] + live_table[i+1][j-1] + live_table[i+1][j];
+                }else if (i === 0 && j === 0) {
+                    //todo 左上角
+                    count = live_table[i+1][j] + live_table[i+1][j+1] + live_table[i][j+1];
+                }else if (i === 0 && j === right - 1) {
+                    //todo 右上角
+                    count = live_table[i][j-1] + live_table[i+1][j-1] + live_table[i+1][j];
+                }else if (i === bottom - 1 && j === 0) {
+                    //todo 左下角
+                    count = live_table[i-1][j] + live_table[i-1][j+1] + live_table[i][j+1]
+                }else if (i === bottom -1 && j === right - 1) {
+                    //todo 右下角
+                    count = live_table[i][j-1] + live_table[i-1][j-1] + live_table[i-1][j];
+                }else {
+                    //todo 中间
+                    count = live_table[i-1][j-1] + live_table[i-1][j] + live_table[i-1][j+1] + live_table[i][j-1] + live_table[i][j+1] + live_table[i+1][j-1] + live_table[i+1][j] + live_table[i+1][j+1];
+                }
+                if (live_table[i][j] === 1 && (count === 2 || count === 3)) {
+                    temp_table[i][j] = 1;
+                } else if (live_table[i][j] === 0 && count === 3){
+                    temp_table[i][j] = 1;
+                } else {
+                    temp_table[i][j] = 0;
+                }
+            }
+        }
+        live_table = temp_table;
+    }
+
+    init_table()
+
+    // var c = document.getElementById("mycanvas");
+    // c.width = 1900;
+    // c.height = 1000;
+    // var ctx = c.getContext("2d");
+    // ctx.fillStyle="#000000";
+    // ctx.fillRect(299, 149,10, 10);
+    // ctx.fillRect(60,180,10,10);
+
+
+</script>
+</body>
+</html>
