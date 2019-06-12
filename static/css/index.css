@@ -9,7 +9,15 @@ body {
     margin: 0;
 }
 
-div {
+.scale{background: #ddd; width: 200px; height: 3px; position: relative;margin: 20px;}
+.scale span{background:#aaa;width:8px;height:16px;position:absolute;left:-2px;top:-6px;cursor:pointer; border-radius: 3px;}
+.scale div{background: #66D9EF; position: absolute; height: 3px; width: 0; left: 0; bottom: 0; }
+
+#btn {
+    margin-left: 20px;
+}
+
+#m_div {
     display: flex;
     justify-content: center;
     align-items: center;

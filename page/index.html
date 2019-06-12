@@ -3,22 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Game Of Life</title>
-    <script src="js/index.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css">
 </head>
 <body>
-<div>
+<div id="m_div">
     <canvas id="mycanvas" style="border: 1px solid; solid-color: #000000;">
     </canvas>
+    <div>
+        <button style="width: 200px; height: 100px;" id="btn">
+            开始
+        </button>
 
-    <button style="width: 200px; height: 100px;" onclick="start()" id="btn">
-        开始
-    </button>
+        <div class="scale" id="bar">
+            <div></div>
+            <span id="speed"></span>
+        </div>
+        <div style="margin-left: 20px" id="speed_text">
+            速率：<span id="title">0</span>毫秒
+        </div>
+    </div>
+
 </div>
 <script>
     window.live_table = [100];
     var canvas_listen;
     var flag = true;
+    document.getElementById("btn").addEventListener("click", start);
     function init_table() {
         for (i = 0; i < 100; i++) {
             window.live_table[i] = [190];
@@ -68,28 +78,39 @@
     }
 
     function end() {
+        var btn = document.getElementById("btn");
         btn.innerHTML = '开始';
         flag = false;
+        btn.removeEventListener("click", end, false);
+        btn.addEventListener("click", start_again);
     }
 
     function start_again() {
+        var btn = document.getElementById("btn");
         btn.innerHTML = '结束';
         flag = true;
+        btn.removeEventListener("click", start_again, false);
+        btn.addEventListener("click", end);
     }
 
     async function start() {
+        document.getElementById("speed_text").style.color = '#ffffff';
         flag = true;
         var c = document.getElementById("mycanvas");
         c.removeEventListener("click", canvas_listen, false);
         var btn = document.getElementById('btn');
         btn.innerHTML = '结束';
+        btn.removeEventListener("click", start, false);
         btn.addEventListener("click", function () {
            flag = false;
            btn.innerHTML = '开始';
+           btn.addEventListener("click", start_again);
         });
-        while (flag) {
-            flush();
-            await sleep(50);
+        while (true) {
+            if (flag) {
+                flush();
+            }
+            await sleep(window.speed);
         }
     }
 
@@ -110,7 +131,7 @@
         }
         cal_table();
     }
-    
+
     function deep_copy(arr) {
         var temp_table = [arr.length];
         for(i = 0; i < arr.length; i ++) {
@@ -119,7 +140,7 @@
         }
         return temp_table;
     }
-    
+
     function cal_table() {
         var temp_table = deep_copy(live_table);
         var c = document.getElementById("mycanvas");
@@ -171,16 +192,7 @@
     }
 
     init_table()
-
-    // var c = document.getElementById("mycanvas");
-    // c.width = 1900;
-    // c.height = 1000;
-    // var ctx = c.getContext("2d");
-    // ctx.fillStyle="#000000";
-    // ctx.fillRect(299, 149,10, 10);
-    // ctx.fillRect(60,180,10,10);
-
-
 </script>
+<script src="../static/js/index.js"></script>
 </body>
 </html>
