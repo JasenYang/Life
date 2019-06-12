@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Game Of Life</title>
-    <script src="../main/index.js"></script>
-    <link rel="stylesheet" type="text/css" href="../static/css/index.css">
+    <script src="js/index.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 <body>
 <div>
@@ -67,7 +67,18 @@
         return new Promise((resolve)=>setTimeout(resolve,ms));
     }
 
+    function end() {
+        btn.innerHTML = '开始';
+        flag = false;
+    }
+
+    function start_again() {
+        btn.innerHTML = '结束';
+        flag = true;
+    }
+
     async function start() {
+        flag = true;
         var c = document.getElementById("mycanvas");
         c.removeEventListener("click", canvas_listen, false);
         var btn = document.getElementById('btn');
@@ -84,10 +95,11 @@
 
     function flush(){
         var c = document.getElementById("mycanvas");
-        c.width = 1900;
+        c.width = 1850;
         c.height = 1000;
         var ctx = c.getContext("2d");
-        ctx.fillStyle="#000000";
+        document.body.style.background = "#000000";
+        ctx.fillStyle="#fff64b";
         ctx.lineWidth = 1;
         for (i=0; i< c.height/10; i++) {
             for (j = 0; j<c.width/10; j++) {
@@ -95,9 +107,6 @@
                     ctx.fillRect(i*10, j*10, 10, 10);
                 }
             }
-        }
-        for (i=0; i<live_table.length;i++) {
-            console.log(live_table[i]);
         }
         cal_table();
     }
