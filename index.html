@@ -78,8 +78,7 @@
         });
         while (flag) {
             flush();
-            await sleep(1000);
-            console.log("输出");
+            await sleep(50);
         }
     }
 
@@ -97,11 +96,23 @@
                 }
             }
         }
+        for (i=0; i<live_table.length;i++) {
+            console.log(live_table[i]);
+        }
         cal_table();
     }
-
+    
+    function deep_copy(arr) {
+        var temp_table = [arr.length];
+        for(i = 0; i < arr.length; i ++) {
+            var l = arr[i];
+            temp_table[i] = [l];
+        }
+        return temp_table;
+    }
+    
     function cal_table() {
-        var temp_table = live_table;
+        var temp_table = deep_copy(live_table);
         var c = document.getElementById("mycanvas");
         right = c.width/10;
         bottom = c.height/10;
@@ -140,16 +151,13 @@
                 }
                 if (live_table[i][j] === 1 && (count === 2 || count === 3)) {
                     temp_table[i][j] = 1;
-                    console.log(i+':'+j);
                 } else if (live_table[i][j] === 0 && count === 3){
                     temp_table[i][j] = 1;
-                    console.log(i+':'+j);
                 } else {
                     temp_table[i][j] = 0;
                 }
             }
         }
-        console.log('-----------------');
         live_table = temp_table;
     }
 
