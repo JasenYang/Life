@@ -25,5 +25,5 @@ var scale = function (btn,bar,title){
         window.speed = pos * 20;
     };
     this.init();
-}
+};
 new scale('speed','bar','title'); //实例化一个拖拽
