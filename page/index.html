@@ -31,48 +31,54 @@
 <script src="../static/js/canvasEntity.js"></script>
 <script src="../static/js/liveTable.js"></script>
 <script src="../static/js/button.js"></script>
+<script src="../static/js/color.js"></script>
 
 <script>
-  // 初始化 liveTable
+  // 创建颜色类
+  var color = new Color();
+
+  // 创建 liveTable ，初始化 liveTable
   var liveTable = new LiveTable(100, 190);
   liveTable.init();
 
-  // 获取 canvas 对象并初始化
+  // 创建 canvas ，初始化 canvas
   var mycavas = document.getElementById("mycanvas");
   var canvasEntity = new CanvasEntity(mycavas);
   canvasEntity.init(900, 900);
 
-  // 初始化 button
+  // 创建 button
   var btn = document.getElementById("btn");
   var button = new Button(btn);
+
   // 添加开始点击
-  button.addClickListener(function () { start(button, canvasEntity, liveTable) })
+  function addStartEvent() { start(button, canvasEntity, liveTable ,color) }
+  button.addClickListener(addStartEvent)
 
   // 点击事件，获取鼠标点击位置
   canvas_listen = function (ev) {
-    getMousePos(liveTable.table, canvasEntity.canvasDiv, ev);
+    getMousePos(liveTable.table, canvasEntity.canvasDiv, ev ,color);
   };
 
   // 为 cavansEntity 添加点击事件
   canvasEntity.addClickListener(canvas_listen);
 
   // 获取鼠标点击位置
-  function getMousePos(liveTable, canvas, event) {
+  function getMousePos(table, canvas, event,color) {
     var rect = canvas.getBoundingClientRect();
     var x = Math.floor((event.clientX - rect.left) / 30);
     var y = Math.floor((event.clientY - rect.top) / 30);
     var ctx = canvas.getContext("2d");
-    if (liveTable[x][y] === 1) {
-      ctx.fillStyle = "#ffffff";
-      ctx.strokeStyle = '#000000';
+    if (table[x][y] === 1) {
+      ctx.fillStyle = color.white;
+      ctx.strokeStyle = color.black;
       ctx.lineWidth = 1;
       ctx.clearRect(x * 30, y * 30, 30, 30);
       ctx.strokeRect(x * 30, y * 30, 30, 30);
-      liveTable[x][y] = 0;
+      table[x][y] = 0;
     } else {
-      ctx.fillStyle = "#000000";
+      ctx.fillStyle = color.black;
       ctx.fillRect(x * 30, y * 30, 30, 30);
-      liveTable[x][y] = 1;
+      table[x][y] = 1;
     }
   }
 
@@ -82,11 +88,11 @@
   }
 
   // 暂停函数
-  function end() {
+  function stop() {
     var btn = document.getElementById("btn");
     btn.innerHTML = '开始';
     flag = false;
-    btn.removeEventListener("click", end, false);
+    btn.removeEventListener("click", stop, false);
     btn.addEventListener("click", start_again);
   }
 
@@ -96,30 +102,25 @@
     btn.innerHTML = '暂停';
     flag = true;
     btn.removeEventListener("click", start_again, false);
-    btn.addEventListener("click", end);
+    btn.addEventListener("click", stop);
   }
 
   // 开始事件
-  async function start(button, canvasEntity, liveTable) {
-    document.getElementById("speed_text").style.color = '#ffffff';
+  async function start(button, canvasEntity, liveTable ,color) {
+    // 修改速度文字颜色
+    document.getElementById("speed_text").style.color = color.white;
     flag = true;
     // 移除点击函数
     canvasEntity.removeClickListener(canvas_listen, false);
+    // 点击开始按钮后移除开始，增加暂停
+    button.btn.innerHTML = '暂停';
+    button.removeClickListener(addStartEvent, false);
+    button.addClickListener(stop);
 
-    var btn = button.btn;
-    btn.innerHTML = '暂停';
-
-    btn.removeEventListener("click", start, false);
-
-    btn.addEventListener("click", function () {
-      flag = false;
-      btn.innerHTML = '开始';
-      btn.addEventListener("click", start_again);
-    });
-
+    // 渲染
     while (true) {
       if (flag) {
-        flush(canvasEntity.canvasDiv, liveTable);
+        flush(canvasEntity.canvasDiv, liveTable,color);
       }
       await sleep(window.speed);
     }
@@ -136,12 +137,12 @@
   }
 
   // 刷新页面
-  function flush(canvasDiv, liveTable) {
+  function flush(canvasDiv, liveTable,color) {
     canvasDiv.width = 1850;
     canvasDiv.height = 1000;
     var ctx = canvasDiv.getContext("2d");
-    document.body.style.background = "#000000";
-    ctx.fillStyle = "#fff64b";
+    document.body.style.background = color.black;
+    ctx.fillStyle = color.lightYellow;
     ctx.lineWidth = 1;
     for (i = 0; i < canvasDiv.height / 10; i++) {
       for (j = 0; j < canvasDiv.width / 10; j++) {
