@@ -19,7 +19,6 @@ CanvasEntity.prototype.init = function (width, height) {
   }
 }
 
-
 // 给 canvas 添加点击事件
 CanvasEntity.prototype.addClickListener = function (listenAction) {
   this.canvasDiv.addEventListener("click", listenAction);
