@@ -20,6 +20,10 @@ CanvasEntity.prototype.init = function (width, height) {
 
 
 // 给cavans添加监听事件
-CanvasEntity.prototype.addListener = function (listenAction) {
+CanvasEntity.prototype.addClickListener = function (listenAction) {
   this.canvasDiv.addEventListener("click", listenAction)
+}
+
+CanvasEntity.prototype.removeClickListener = function (listenAction, key) {
+  this.canvasDiv.removeEventListener("click", listenAction, key)
 }

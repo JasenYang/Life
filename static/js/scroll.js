@@ -18,6 +18,9 @@ var scale = function (btn,bar,title){
             };
             g.onmouseup=new Function('this.onmousemove=null');
         };
+        this.step.style.width='50px';
+        this.btn.style.left ='50px';
+        window.speed = 500;
     };
     this.ondrag = function (pos,x){
         this.step.style.width=Math.max(0,x)+'px';

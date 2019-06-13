@@ -21,365 +21,186 @@
         <span id="speed"></span>
       </div>
       <div style="margin-left: 20px" id="speed_text">
-        速率：<span id="title">0</span>毫秒
+        速率：<span id="title">500</span>毫秒
       </div>
     </div>
   </div>
-
- 
-
-  <!-- <script>
-    window.live_table = [100];
-    var canvas_listen;
-    var flag = true;
-    document.getElementById("btn").addEventListener("click", start);
-
-    function init_table() {
-      for (i = 0; i < 100; i++) {
-        window.live_table[i] = [190];
-        for (j = 0; j < 190; j++) {
-          window.live_table[i][j] = 0;
-        }
-      }
-      var c = document.getElementById("mycanvas");
-      c.width = 900;
-      c.height = 900;
-      canvas_listen = function (ev) {
-        getMousePos(c, ev);
-      };
-
-      c.addEventListener("click", canvas_listen);
-      console.log(c)
-      // var ctx = c.getContext("2d");
-      // ctx.fillStyle = "#ffffff";
-      // ctx.strokeStyle = '#000000';
-      // ctx.lineWidth = 1;
-      // for (i = 0; i < c.width; i++) {
-      //   for (j = 0; j < c.height; j++) {
-      //     ctx.strokeRect(i * 30, j * 30, 30, 30);
-      //   }
-      // }
-    }
-
-
-
-    // 测试了
-    function getMousePos(canvas, event) {
-      var rect = canvas.getBoundingClientRect();
-      var x = Math.floor((event.clientX - rect.left) / 30);
-      var y = Math.floor((event.clientY - rect.top) / 30);
-      var ctx = canvas.getContext("2d");
-      if (window.live_table[x][y] === 1) {
-        ctx.fillStyle = "#ffffff";
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1;
-        ctx.clearRect(x * 30, y * 30, 30, 30);
-        ctx.strokeRect(x * 30, y * 30, 30, 30);
-        window.live_table[x][y] = 0;
-      } else {
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(x * 30, y * 30, 30, 30);
-        window.live_table[x][y] = 1;
-      }
-    }
-
-    function sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    function end() {
-      var btn = document.getElementById("btn");
-      btn.innerHTML = '开始';
-      flag = false;
-      btn.removeEventListener("click", end, false);
-      btn.addEventListener("click", start_again);
-    }
-
-    function start_again() {
-      var btn = document.getElementById("btn");
-      btn.innerHTML = '结束';
-      flag = true;
-      btn.removeEventListener("click", start_again, false);
-      btn.addEventListener("click", end);
-    }
-
-    async function start() {
-      document.getElementById("speed_text").style.color = '#ffffff';
-      flag = true;
-      var c = document.getElementById("mycanvas");
-      c.removeEventListener("click", canvas_listen, false);
-      var btn = document.getElementById('btn');
-      btn.innerHTML = '结束';
-      btn.removeEventListener("click", start, false);
-      btn.addEventListener("click", function () {
-        flag = false;
-        btn.innerHTML = '开始';
-        btn.addEventListener("click", start_again);
-      });
-      while (true) {
-        if (flag) {
-          flush();
-        }
-        await sleep(window.speed);
-      }
-    }
-
-    function flush() {
-      var c = document.getElementById("mycanvas");
-      c.width = 1850;
-      c.height = 1000;
-      var ctx = c.getContext("2d");
-      document.body.style.background = "#000000";
-      ctx.fillStyle = "#fff64b";
-      ctx.lineWidth = 1;
-      for (i = 0; i < c.height / 10; i++) {
-        for (j = 0; j < c.width / 10; j++) {
-          if (live_table[i][j] === 1) {
-            ctx.fillRect(i * 10, j * 10, 10, 10);
-          }
-        }
-      }
-      cal_table();
-    }
-
-    function deep_copy(arr) {
-      var temp_table = [arr.length];
-      for (i = 0; i < arr.length; i++) {
-        var l = arr[i];
-        temp_table[i] = [l];
-      }
-      return temp_table;
-    }
-
-    function cal_table() {
-      var temp_table = deep_copy(live_table);
-      var c = document.getElementById("mycanvas");
-      right = c.width / 10;
-      bottom = c.height / 10;
-      // var lowest = 2;
-      // var highest = 3;
-      for (i = 0; i < bottom; i++) {
-        for (j = 0; j < right; j++) {
-          var count = 0;
-          if (i === 0 && j !== 0 && j !== right - 1) {
-            //todo 上边界
-            count = live_table[i][j - 1] + live_table[i + 1][j - 1] + live_table[i + 1][j] + live_table[i + 1][j + 1] + live_table[i][j + 1];
-          } else if (i === bottom - 1 && j !== 0 && j !== right - 1) {
-            //todo 下边界
-            count = live_table[i][j - 1] + live_table[i - 1][j - 1] + live_table[i - 1][j] + live_table[i - 1][j + 1] + live_table[i][j + 1];
-          } else if (j === 0 && i !== 0 && i !== bottom - 1) {
-            //todo 左边界
-            count = live_table[i - 1][j] + live_table[i - 1][j + 1] + live_table[i][j + 1] + live_table[i + 1][j + 1] + live_table[i + 1][j];
-          } else if (j === right - 1 && i !== 0 && i !== bottom - 1) {
-            //todo 右边界
-            count = live_table[i - 1][j] + live_table[i - 1][j - 1] + live_table[i][j - 1] + live_table[i + 1][j - 1] + live_table[i + 1][j];
-          } else if (i === 0 && j === 0) {
-            //todo 左上角
-            count = live_table[i + 1][j] + live_table[i + 1][j + 1] + live_table[i][j + 1];
-          } else if (i === 0 && j === right - 1) {
-            //todo 右上角
-            count = live_table[i][j - 1] + live_table[i + 1][j - 1] + live_table[i + 1][j];
-          } else if (i === bottom - 1 && j === 0) {
-            //todo 左下角
-            count = live_table[i - 1][j] + live_table[i - 1][j + 1] + live_table[i][j + 1]
-          } else if (i === bottom - 1 && j === right - 1) {
-            //todo 右下角
-            count = live_table[i][j - 1] + live_table[i - 1][j - 1] + live_table[i - 1][j];
-          } else {
-            //todo 中间
-            count = live_table[i - 1][j - 1] + live_table[i - 1][j] + live_table[i - 1][j + 1] + live_table[i][j - 1] + live_table[i][j + 1] + live_table[i + 1][j - 1] + live_table[i + 1][j] + live_table[i + 1][j + 1];
-          }
-          if (live_table[i][j] === 1 && (count === 2 || count === 3)) {
-            temp_table[i][j] = 1;
-          } else if (live_table[i][j] === 0 && count === 3) {
-            temp_table[i][j] = 1;
-          } else {
-            temp_table[i][j] = 0;
-          }
-        }
-      }
-      live_table = temp_table;
-    }
-
-    init_table()
-
-
-
-  </script> -->
-
-
 </body>
 <script src="../static/js/table.js"></script>
-<script src="../static/js/index.js"></script>
+<script src="../static/js/scroll.js"></script>
 <script src="../static/js/canvasEntity.js"></script>
 <script src="../static/js/liveTable.js"></script>
+<script src="../static/js/button.js"></script>
 
 <script>
-    // 初始化liveTable
+  // 初始化liveTable
+  var liveTable = new LiveTable(100, 190)
+  liveTable.init()
 
-    var liveTable = new LiveTable(100, 190)
-    liveTable.init()
+  // 获取canvas对象并初始化
+  var mycavas = document.getElementById("mycanvas");
+  var canvasEntity = new CanvasEntity(mycavas);
+  canvasEntity.init(900, 900)
 
+  // 初始化button
+  var btn = document.getElementById("btn");
+  var button = new Button(btn)
+  // 添加开始点击
+  button.addClickListener(function () { start(canvasEntity.canvasDiv, liveTable) })
 
+  // 点击事件 
+  canvas_listen = function (ev) {
+    getMousePos(liveTable.table, canvasEntity.canvasDiv, ev);
+  };
 
-    // 获取canvas对象并初始化
-    var b = document.getElementById("mycanvas");
-    var canvasEntity = new CanvasEntity(b);
-    canvasEntity.init(900, 900)
+  // 添加点击事件
+  canvasEntity.addClickListener(canvas_listen);
 
-    // 给 button 添加开始事件
-    document.getElementById("btn").addEventListener("click", function(){start(canvasEntity,liveTable)});
-
-
-   
-
-      // 点击事件 
-    canvas_listen = function (ev) {
-      getMousePos(liveTable.live_table, canvasEntity.canvasDiv, ev);
-    };
-
-    // 添加点击事件
-    canvasEntity.canvasDiv.addEventListener("click", canvas_listen);
-
-    // 获取鼠标点击位置
-    function getMousePos(liveTable, canvas, event) {
-      var rect = canvas.getBoundingClientRect();
-      var x = Math.floor((event.clientX - rect.left) / 30);
-      var y = Math.floor((event.clientY - rect.top) / 30);
-      var ctx = canvas.getContext("2d");
-      if (liveTable[x][y] === 1) {
-        ctx.fillStyle = "#ffffff";
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 1;
-        ctx.clearRect(x * 30, y * 30, 30, 30);
-        ctx.strokeRect(x * 30, y * 30, 30, 30);
-        liveTable[x][y] = 0;
-      } else {
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(x * 30, y * 30, 30, 30);
-        liveTable[x][y] = 1;
-      }
-    }
-
-    // 时间
-    function sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    // 开始
-    async function start(canvasEntity,liveTable) {
-      document.getElementById("speed_text").style.color = '#ffffff';
-      
-      
-      flag = true;
-      canvasEntity.canvasDiv.removeEventListener("click", canvas_listen, false);
-
-      var btn = document.getElementById('btn');
-      btn.innerHTML = '结束';
-
-      btn.removeEventListener("click", start, false);
-
-      btn.addEventListener("click", function () {
-        flag = false;
-        btn.innerHTML = '开始';
-        btn.addEventListener("click", start_again);
-      });
-
-      while (true) {
-        if (flag) {
-          flush(canvasEntity,liveTable);
-        }
-        await sleep(window.speed);
-      }
-    }
-
-    // 深拷贝
-    function deep_copy(arr) {
-      var temp_table = [arr.length];
-      for (i = 0; i < arr.length; i++) {
-        var l = arr[i];
-        temp_table[i] = [l];
-      }
-      return temp_table;
-    }
-
-    // 刷新页面
-    function flush(canvasEntity,liveTable) {
-      
-    
-
-
-      canvasEntity.canvasDiv.width = 1850;
-      canvasEntity.canvasDiv.height = 1000;
-      var ctx = canvasEntity.canvasDiv.getContext("2d");
-      document.body.style.background = "#000000";
-      ctx.fillStyle = "#fff64b";
+  // 获取鼠标点击位置
+  function getMousePos(liveTable, canvas, event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = Math.floor((event.clientX - rect.left) / 30);
+    var y = Math.floor((event.clientY - rect.top) / 30);
+    var ctx = canvas.getContext("2d");
+    if (liveTable[x][y] === 1) {
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = '#000000';
       ctx.lineWidth = 1;
-      for (i = 0; i < canvasEntity.canvasDiv.height / 10; i++) {
-        for (j = 0; j < canvasEntity.canvasDiv.width / 10; j++) {
-          if (liveTable.live_table[i][j] === 1) {
-            ctx.fillRect(i * 10, j * 10, 10, 10);
-          }
+      ctx.clearRect(x * 30, y * 30, 30, 30);
+      ctx.strokeRect(x * 30, y * 30, 30, 30);
+      liveTable[x][y] = 0;
+    } else {
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(x * 30, y * 30, 30, 30);
+      liveTable[x][y] = 1;
+    }
+  }
+
+  // 时间
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  // 暂停函数
+  function end() {
+    var btn = document.getElementById("btn");
+    btn.innerHTML = '开始';
+    flag = false;
+    btn.removeEventListener("click", end, false);
+    btn.addEventListener("click", start_again);
+  }
+
+  // 再次开始
+  function start_again() {
+    var btn = document.getElementById("btn");
+    btn.innerHTML = '暂停';
+    flag = true;
+    btn.removeEventListener("click", start_again, false);
+    btn.addEventListener("click", end);
+  }
+
+  // 开始
+  async function start(canvasDiv, liveTable) {
+    document.getElementById("speed_text").style.color = '#ffffff';
+    flag = true;
+    canvasDiv.removeEventListener("click", canvas_listen, false);
+
+    var btn = document.getElementById('btn');
+    btn.innerHTML = '暂停';
+
+    btn.removeEventListener("click", start, false);
+
+    btn.addEventListener("click", function () {
+      flag = false;
+      btn.innerHTML = '开始';
+      btn.addEventListener("click", start_again);
+    });
+
+    while (true) {
+      if (flag) {
+        flush(canvasDiv, liveTable);
+      }
+      await sleep(window.speed);
+    }
+  }
+
+  // 深拷贝
+  function deep_copy(arr) {
+    var tempTable = [arr.length];
+    for (i = 0; i < arr.length; i++) {
+      var l = arr[i];
+      tempTable[i] = [l];
+    }
+    return tempTable;
+  }
+
+  // 刷新页面
+  function flush(canvasDiv, liveTable) {
+    canvasDiv.width = 1850;
+    canvasDiv.height = 1000;
+    var ctx = canvasDiv.getContext("2d");
+    document.body.style.background = "#000000";
+    ctx.fillStyle = "#fff64b";
+    ctx.lineWidth = 1;
+    for (i = 0; i < canvasDiv.height / 10; i++) {
+      for (j = 0; j < canvasDiv.width / 10; j++) {
+        if (liveTable.table[i][j] === 1) {
+          ctx.fillRect(i * 10, j * 10, 10, 10);
         }
       }
-      cal_table(canvasEntity,liveTable);
     }
+    cal_table(canvasDiv, liveTable);
+  }
 
-    // 计算下一次的格子
-    function cal_table(canvasEntity,liveTable) {
-
-      var temp_table = deep_copy(liveTable.live_table);
-      var c = canvasEntity.canvasDiv;
-      right = c.width / 10;
-      bottom = c.height / 10;
-      // var lowest = 2;
-      // var highest = 3;
-      for (i = 0; i < bottom; i++) {
-        for (j = 0; j < right; j++) {
-          var count = 0;
-          if (i === 0 && j !== 0 && j !== right - 1) {
-            //todo 上边界
-            count = liveTable.live_table[i][j - 1] + liveTable.live_table[i + 1][j - 1] + liveTable.live_table[i + 1][j] + liveTable.live_table[i + 1][j + 1] + liveTable.live_table[i][j + 1];
-          } else if (i === bottom - 1 && j !== 0 && j !== right - 1) {
-            //todo 下边界
-            count = liveTable.live_table[i][j - 1] + liveTable.live_table[i - 1][j - 1] + liveTable.live_table[i - 1][j] + liveTable.live_table[i - 1][j + 1] + liveTable.live_table[i][j + 1];
-          } else if (j === 0 && i !== 0 && i !== bottom - 1) {
-            //todo 左边界
-            count = liveTable.live_table[i - 1][j] + liveTable.live_table[i - 1][j + 1] + liveTable.live_table[i][j + 1] + liveTable.live_table[i + 1][j + 1] + liveTable.live_table[i + 1][j];
-          } else if (j === right - 1 && i !== 0 && i !== bottom - 1) {
-            //todo 右边界
-            count = liveTable.live_table[i - 1][j] + liveTable.live_table[i - 1][j - 1] + liveTable.live_table[i][j - 1] + liveTable.live_table[i + 1][j - 1] + liveTable.live_table[i + 1][j];
-          } else if (i === 0 && j === 0) {
-            //todo 左上角
-            count = liveTable.live_table[i + 1][j] + liveTable.live_table[i + 1][j + 1] + liveTable.live_table[i][j + 1];
-          } else if (i === 0 && j === right - 1) {
-            //todo 右上角
-            count = liveTable.live_table[i][j - 1] + liveTable.live_table[i + 1][j - 1] + liveTable.live_table[i + 1][j];
-          } else if (i === bottom - 1 && j === 0) {
-            //todo 左下角
-            count = liveTable.live_table[i - 1][j] + liveTable.live_table[i - 1][j + 1] + liveTable.live_table[i][j + 1]
-          } else if (i === bottom - 1 && j === right - 1) {
-            //todo 右下角
-            count = liveTable.live_table[i][j - 1] + liveTable.live_table[i - 1][j - 1] + liveTable.live_table[i - 1][j];
-          } else {
-            //todo 中间
-            count = liveTable.live_table[i - 1][j - 1] + liveTable.live_table[i - 1][j] + liveTable.live_table[i - 1][j + 1] + liveTable.live_table[i][j - 1] + liveTable.live_table[i][j + 1] + liveTable.live_table[i + 1][j - 1] + liveTable.live_table[i + 1][j] + liveTable.live_table[i + 1][j + 1];
-          }
-          if (liveTable.live_table[i][j] === 1 && (count === 2 || count === 3)) {
-            temp_table[i][j] = 1;
-          } else if (liveTable.live_table[i][j] === 0 && count === 3) {
-            temp_table[i][j] = 1;
-          } else {
-            temp_table[i][j] = 0;
-          }
+  // 计算下一次的格子
+  function cal_table(canvasDiv, liveTable) {
+    var tempTable = deep_copy(liveTable.table);
+    var c = canvasDiv;
+    right = c.width / 10;
+    bottom = c.height / 10;
+    for (i = 0; i < bottom; i++) {
+      for (j = 0; j < right; j++) {
+        var count = 0;
+        if (i === 0 && j !== 0 && j !== right - 1) {
+          // 上边界
+          count = liveTable.table[i][j - 1] + liveTable.table[i + 1][j - 1] + liveTable.table[i + 1][j] + liveTable.table[i + 1][j + 1] + liveTable.table[i][j + 1];
+        } else if (i === bottom - 1 && j !== 0 && j !== right - 1) {
+          // 下边界
+          count = liveTable.table[i][j - 1] + liveTable.table[i - 1][j - 1] + liveTable.table[i - 1][j] + liveTable.table[i - 1][j + 1] + liveTable.table[i][j + 1];
+        } else if (j === 0 && i !== 0 && i !== bottom - 1) {
+          // 左边界
+          count = liveTable.table[i - 1][j] + liveTable.table[i - 1][j + 1] + liveTable.table[i][j + 1] + liveTable.table[i + 1][j + 1] + liveTable.table[i + 1][j];
+        } else if (j === right - 1 && i !== 0 && i !== bottom - 1) {
+          // 右边界
+          count = liveTable.table[i - 1][j] + liveTable.table[i - 1][j - 1] + liveTable.table[i][j - 1] + liveTable.table[i + 1][j - 1] + liveTable.table[i + 1][j];
+        } else if (i === 0 && j === 0) {
+          // 左上角
+          count = liveTable.table[i + 1][j] + liveTable.table[i + 1][j + 1] + liveTable.table[i][j + 1];
+        } else if (i === 0 && j === right - 1) {
+          // 右上角
+          count = liveTable.table[i][j - 1] + liveTable.table[i + 1][j - 1] + liveTable.table[i + 1][j];
+        } else if (i === bottom - 1 && j === 0) {
+          // 左下角
+          count = liveTable.table[i - 1][j] + liveTable.table[i - 1][j + 1] + liveTable.table[i][j + 1]
+        } else if (i === bottom - 1 && j === right - 1) {
+          // 右下角
+          count = liveTable.table[i][j - 1] + liveTable.table[i - 1][j - 1] + liveTable.table[i - 1][j];
+        } else {
+          // 中间
+          count = liveTable.table[i - 1][j - 1] + liveTable.table[i - 1][j] + liveTable.table[i - 1][j + 1] + liveTable.table[i][j - 1] + liveTable.table[i][j + 1] + liveTable.table[i + 1][j - 1] + liveTable.table[i + 1][j] + liveTable.table[i + 1][j + 1];
+        }
+        if (liveTable.table[i][j] === 1 && (count === 2 || count === 3)) {
+          tempTable[i][j] = 1;
+        } else if (liveTable.table[i][j] === 0 && count === 3) {
+          tempTable[i][j] = 1;
+        } else {
+          tempTable[i][j] = 0;
         }
       }
-      liveTable.live_table = temp_table;
     }
-
-   
-
-  </script>
+    liveTable.table = tempTable;
+  }
+</script>
 
 
 </html>
