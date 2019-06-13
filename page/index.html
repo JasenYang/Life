@@ -51,34 +51,34 @@
   var button = new Button(btn);
 
   // 添加开始点击
-  function addStartEvent() { start(button, canvasEntity, liveTable ,color) }
+  function addStartEvent() { start(button, canvasEntity, liveTable, color) }
   button.addClickListener(addStartEvent)
 
   // 点击事件，获取鼠标点击位置
   canvas_listen = function (ev) {
-    getMousePos(liveTable.table, canvasEntity.canvasDiv, ev ,color);
+    getMousePos(liveTable.table, canvasEntity.canvasDiv, ev, color);
   };
 
   // 为 cavansEntity 添加点击事件
   canvasEntity.addClickListener(canvas_listen);
 
   // 获取鼠标点击位置
-  function getMousePos(table, canvas, event,color) {
+  function getMousePos(table, canvas, event, color) {
     var rect = canvas.getBoundingClientRect();
     var x = Math.floor((event.clientX - rect.left) / 30);
     var y = Math.floor((event.clientY - rect.top) / 30);
     var ctx = canvas.getContext("2d");
-    if (table[x][y] === 1) {
+    if (table[x + 60][y + 30] === 1) {
       ctx.fillStyle = color.white;
       ctx.strokeStyle = color.black;
       ctx.lineWidth = 1;
       ctx.clearRect(x * 30, y * 30, 30, 30);
       ctx.strokeRect(x * 30, y * 30, 30, 30);
-      table[x][y] = 0;
+      table[x + 60][y + 30] = 0;
     } else {
       ctx.fillStyle = color.black;
       ctx.fillRect(x * 30, y * 30, 30, 30);
-      table[x+60][y+30] = 1;
+      table[x + 60][y + 30] = 1;
     }
   }
 
@@ -106,7 +106,7 @@
   }
 
   // 开始事件
-  async function start(button, canvasEntity, liveTable ,color) {
+  async function start(button, canvasEntity, liveTable, color) {
     // 修改速度文字颜色
     document.getElementById("speed_text").style.color = color.white;
     flag = true;
@@ -120,7 +120,7 @@
     // 渲染
     while (true) {
       if (flag) {
-        flush(canvasEntity.canvasDiv, liveTable,color);
+        flush(canvasEntity.canvasDiv, liveTable, color);
       }
       await sleep(window.speed);
     }
@@ -137,7 +137,7 @@
   }
 
   // 刷新页面
-  function flush(canvasDiv, liveTable,color) {
+  function flush(canvasDiv, liveTable, color) {
     canvasDiv.width = 1850;
     canvasDiv.height = 1000;
     var ctx = canvasDiv.getContext("2d");
