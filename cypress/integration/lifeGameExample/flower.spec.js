@@ -1,34 +1,34 @@
 context('flower', () => {
-    beforeEach(() => {
-      cy.visit('http://101.132.147.55')
-    })
-  
-    var width = 30;
+  beforeEach(() => {
+    cy.visit('http://101.132.147.55')
+  })
 
-    // 点击开始 四分之一朵花
-    it('测试开始', () => {
+  var width = 30;
 
-      cy.get('#mycanvas')
-        .click(7*width, 10*width)
-        .click(8*width, 10*width)
-        .click(9*width, 10*width)
-        .click(9*width, 11*width)
+  // 点击开始 四分之一朵花
+  it('测试开始', () => {
 
-        .click(11*width, 8*width)
-        .click(11*width, 7*width)
-        .click(11*width, 6*width)
-        .click(12*width, 8*width)
+    cy.get('#mycanvas')
+      .click(7 * width + 30, 10 * width + 30)
+      .click(8 * width + 30, 10 * width + 30)
+      .click(9 * width + 30, 10 * width + 30)
+      .click(9 * width + 30, 11 * width + 30)
 
-        .click(11*width, 10*width)
-        .click(12*width, 10*width)
-        .click(11*width, 11*width)
-        .click(13*width, 11*width)
-        .click(13*width, 12*width)
-        .click(12*width, 12*width)
+      .click(11 * width + 30, 8 * width + 30)
+      .click(11 * width + 30, 7 * width + 30)
+      .click(11 * width + 30, 6 * width + 30)
+      .click(12 * width + 30, 8 * width + 30)
 
-
+      .click(11 * width + 30, 10 * width + 30)
+      .click(12 * width + 30, 10 * width + 30)
+      .click(11 * width + 30, 11 * width + 30)
+      .click(13 * width + 30, 11 * width + 30)
+      .click(13 * width + 30, 12 * width + 30)
+      .click(12 * width + 30, 12 * width + 30)
 
 
-      cy.get('#btn').click()
-    })  
+    cy.pause()
+
+    // cy.get('#btn').click()
+  })
 })
