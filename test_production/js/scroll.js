@@ -1,3 +1,4 @@
+// 滑动调节速度函数
 var scale = function (btn,bar,title){
     this.btn = document.getElementById(btn);
     this.bar = document.getElementById(bar);
@@ -18,6 +19,9 @@ var scale = function (btn,bar,title){
             };
             g.onmouseup=new Function('this.onmousemove=null');
         };
+        this.step.style.width='50px';
+        this.btn.style.left ='50px';
+        window.speed = 500;
     };
     this.ondrag = function (pos,x){
         this.step.style.width=Math.max(0,x)+'px';
@@ -25,5 +29,6 @@ var scale = function (btn,bar,title){
         window.speed = pos * 20;
     };
     this.init();
-}
-new scale('speed','bar','title'); //实例化一个拖拽
+};
+//实例化一个拖拽
+new scale('speed','bar','title'); 

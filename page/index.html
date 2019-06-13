@@ -26,34 +26,34 @@
     </div>
   </div>
 </body>
-<script src="../static/js/table.js"></script>
+
 <script src="../static/js/scroll.js"></script>
 <script src="../static/js/canvasEntity.js"></script>
 <script src="../static/js/liveTable.js"></script>
 <script src="../static/js/button.js"></script>
 
 <script>
-  // 初始化liveTable
-  var liveTable = new LiveTable(100, 190)
-  liveTable.init()
+  // 初始化 liveTable
+  var liveTable = new LiveTable(100, 190);
+  liveTable.init();
 
-  // 获取canvas对象并初始化
+  // 获取 canvas 对象并初始化
   var mycavas = document.getElementById("mycanvas");
   var canvasEntity = new CanvasEntity(mycavas);
-  canvasEntity.init(900, 900)
+  canvasEntity.init(900, 900);
 
-  // 初始化button
+  // 初始化 button
   var btn = document.getElementById("btn");
-  var button = new Button(btn)
+  var button = new Button(btn);
   // 添加开始点击
-  button.addClickListener(function () { start(canvasEntity.canvasDiv, liveTable) })
+  button.addClickListener(function () { start(button, canvasEntity, liveTable) })
 
-  // 点击事件 
+  // 点击事件，获取鼠标点击位置
   canvas_listen = function (ev) {
     getMousePos(liveTable.table, canvasEntity.canvasDiv, ev);
   };
 
-  // 添加点击事件
+  // 为 cavansEntity 添加点击事件
   canvasEntity.addClickListener(canvas_listen);
 
   // 获取鼠标点击位置
@@ -76,7 +76,7 @@
     }
   }
 
-  // 时间
+  // 睡眠
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -99,13 +99,14 @@
     btn.addEventListener("click", end);
   }
 
-  // 开始
-  async function start(canvasDiv, liveTable) {
+  // 开始事件
+  async function start(button, canvasEntity, liveTable) {
     document.getElementById("speed_text").style.color = '#ffffff';
     flag = true;
-    canvasDiv.removeEventListener("click", canvas_listen, false);
+    // 移除点击函数
+    canvasEntity.removeClickListener(canvas_listen, false);
 
-    var btn = document.getElementById('btn');
+    var btn = button.btn;
     btn.innerHTML = '暂停';
 
     btn.removeEventListener("click", start, false);
@@ -118,7 +119,7 @@
 
     while (true) {
       if (flag) {
-        flush(canvasDiv, liveTable);
+        flush(canvasEntity.canvasDiv, liveTable);
       }
       await sleep(window.speed);
     }

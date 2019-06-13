@@ -1,3 +1,4 @@
+// 滑动调节速度函数
 var scale = function (btn,bar,title){
     this.btn = document.getElementById(btn);
     this.bar = document.getElementById(bar);
@@ -29,4 +30,5 @@ var scale = function (btn,bar,title){
     };
     this.init();
 };
-new scale('speed','bar','title'); //实例化一个拖拽
+//实例化一个拖拽
+new scale('speed','bar','title'); 
